@@ -1,8 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { getTranslations } from '@/lib/i18n';
-
-const Footer = ({ locale }) => {
+import {Locale} from "@/app/page";
+interface footer {
+    locale: Locale;
+}
+const Footer = ({ locale }: footer) => {
     const t = getTranslations(locale)?.footer || getTranslations('tr').footer; // Fallback ile çevirileri al
     const currentYear = new Date().getFullYear();
 
@@ -11,21 +14,21 @@ const Footer = ({ locale }) => {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-10"> {/* Daha fazla sütun için lg:grid-cols-5 */}
 
-                    {/* Sütun 1: Logo & Kısa Açıklama (Opsiyonel) */}
+                    {/* Sütun 1: Logo & Kısa Açıklama */}
                     <div className="col-span-2 lg:col-span-1 mb-6 lg:mb-0">
                         <Link href="/public" className="inline-block mb-3">
                             {/* Logo (varsa) veya Metin Logo */}
                             <span className="text-xl font-bold text-white">FinArea</span>
                         </Link>
                         <p className="text-sm text-gray-500">
-                            Yapay zeka destekli kişisel finans yönetimi.
+                            {t.description || 'Yapay zeka destekli kişisel finans yönetimi.'}
                         </p>
                     </div>
 
 
-                    {/* Sütun 2: FinArea */}
+                    {/* Sütun 2: Discover */}
                     <div>
-                        <h5 className="font-semibold text-gray-100 mb-3 tracking-wide">FinArea</h5> {/* Başlık stili */}
+                        <h5 className="font-semibold text-gray-100 mb-3 tracking-wide">{t?.infoTitle || 'Keşfet'}</h5> {/* Başlık stili */}
                         <ul className="space-y-2 text-sm">
                             <li><Link href="/about" className="hover:text-white transition-colors">{t.about || 'Hakkımızda'}</Link></li>
                             <li><Link href="/careers" className="hover:text-white transition-colors">{t.careers || 'Kariyer'}</Link></li>
@@ -36,17 +39,17 @@ const Footer = ({ locale }) => {
 
                     {/* Sütun 3: Kaynaklar */}
                     <div>
-                        <h5 className="font-semibold text-gray-100 mb-3 tracking-wide">Kaynaklar</h5>
+                        <h5 className="font-semibold text-gray-100 mb-3 tracking-wide">{t?.resourcesTitle || 'Kaynaklar'}</h5>
                         <ul className="space-y-2 text-sm">
                             <li><Link href="/help" className="hover:text-white transition-colors">{t.help || 'Yardım Merkezi'}</Link></li>
                             <li><Link href="/faq" className="hover:text-white transition-colors">{t.faq || 'SSS'}</Link></li>
-                            <li><Link href="#security" className="hover:text-white transition-colors">{t.security || 'Güvenlik'}</Link></li> {/* ID'ye scroll olabilir */}
+                            <li><Link href="#security" className="hover:text-white transition-colors">{t.security || 'Güvenlik'}</Link></li>
                         </ul>
                     </div>
 
                     {/* Sütun 4: Yasal */}
                     <div>
-                        <h5 className="font-semibold text-gray-100 mb-3 tracking-wide">Yasal</h5>
+                        <h5 className="font-semibold text-gray-100 mb-3 tracking-wide">{t?.legalTitle || 'Yasal'}</h5>
                         <ul className="space-y-2 text-sm">
                             <li><Link href="/privacy" className="hover:text-white transition-colors">{t.privacy || 'Gizlilik Politikası'}</Link></li>
                             <li><Link href="/terms" className="hover:text-white transition-colors">{t.terms || 'Kullanım Koşulları'}</Link></li>

@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "login": "Log In",
+    "signUp": "Sign Up"
+  },
+  "hero": {
+    "title": "FinArea: Your AI-Powered Personal Finance Guide",
+    "subtitle": "Effortlessly track your expenses, manage your budget wisely, and achieve your financial goals with FinArea's AI analysis and recommendations.",
+    "ctaPrimary": "Get Started for Free",
+    "ctaSecondary": "Learn More",
+    "imageAlt": "Modern interface graphic showing financial data"
+  },
+  "features": {
+    "title": "Simplify Your Financial Life",
+    "subtitle": "Discover the powerful features of FinArea.",
+    "feature1": { "title": "Smart Expense Tracking", "description": "Upload your bank statements or PDFs, FinArea automatically categorizes your expenses with AI." },
+    "feature2": { "title": "Visual Analysis & Reports", "description": "Visualize your spending habits with clear charts and monthly reports. See exactly where your money goes." },
+    "feature3": { "title": "AI Budget Planning", "description": "Forecast your next month's budget based on your past data. Set realistic goals with AI-powered suggestions." },
+    "feature4": { "title": "Personalized Recommendations", "description": "Discover areas where you can save based on your spending patterns and get tips to improve your financial health." }
+  },
+  "howItWorks": {
+    "title": "Get Started in Just 3 Simple Steps",
+    "step1": { "title": "Connect/Upload Your Data", "description": "Securely connect your bank accounts or easily upload your PDF statements. Your data is encrypted and protected." },
+    "step2": { "title": "Let AI Analyze", "description": "FinArea's advanced AI processes your data, automatically classifies expenses, and provides meaningful summaries." },
+    "step3": { "title": "Plan & Achieve", "description": "Create your budget, track your progress, and take control of your finances using AI forecasts and personal advice." }
+  },
+  "whyFinArea": {
+    "title": "A Smart Choice for Your Financial Future",
+    "subtitle": "FinArea not only visualizes your data but also supports your financial decisions with AI power, helping you reach your goals faster.",
+    "benefitAi": { "title": "Intelligent AI", "description": "More than just tracking — it understands your data to offer personalized insights and proactive recommendations." },
+    "benefitSecurity": { "title": "Bank-Level Security", "description": "Your data is encrypted and stored with the highest security standards. Your privacy is our priority." },
+    "benefitUi": { "title": "User-Friendly Interface", "description": "Even complex financial data is easy to understand with our simple, intuitive, and modern design." },
+    "benefitTime": { "title": "Save Time", "description": "Forget manual data entry and complex calculations. FinArea automates processes to save you time." }
+  },
+  "finalCta": {
+    "title": "Take the First Step Toward Financial Freedom!",
+    "subtitle": "Join FinArea for free today and start managing your money smarter.",
+    "button": "Sign Up Now"
+  },
+  "footer": {
+    "infoTitle": "Discover",
+    "resourcesTitle": "Resources",
+    "legalTitle": "Legal",
+    "about": "About Us",
+    "careers": "Careers",
+    "blog": "Blog",
+    "contact": "Contact",
+    "help": "Help Center",
+    "faq": "FAQ",
+    "security": "Security",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "cookies": "Cookie Policy",
+    "follow": "Follow Us",
+    "copyright": "© {year} FinArea. All Rights Reserved.",
+    "description": "AI-powered personal finance management."
+  }
+
+
+}

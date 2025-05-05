@@ -1,7 +1,14 @@
-import React from 'react';
+// components/home/HowItWorksSection.tsx
+import React, {JSX} from 'react';
 import { getTranslations } from '@/lib/i18n';
+import { Locale } from '@/app/page'; // Locale tipini ana sayfadan veya merkezi bir tipler dosyasından import edin
 
-const HowItWorksSection = ({ locale }) => {
+// Component'in alacağı prop'ları tanımlayan interface
+interface HowItWorksProps {
+    locale: Locale;
+}
+
+const HowItWorksSection = ({ locale }: HowItWorksProps): JSX.Element => { // Prop tipini ve dönüş tipini belirtin
     const t = getTranslations(locale)?.howItWorks || getTranslations('tr').howItWorks;
     const stepsData = [
         { id: 1, trKey: 'step1' },

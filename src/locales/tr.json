@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "login": "Giriş Yap",
+    "signUp": "Kaydol"
+  },
+  "hero": {
+    "title": "FinArea: Yapay Zeka Destekli Kişisel Finans Rehberiniz",
+    "subtitle": "Harcamalarınızı zahmetsizce takip edin, bütçenizi akıllıca yönetin ve finansal hedeflerinize FinArea'nın yapay zeka analizleri ve tavsiyeleriyle ulaşın.",
+    "ctaPrimary": "Hemen Ücretsiz Başla",
+    "ctaSecondary": "Daha Fazla Bilgi",
+    "imageAlt": "Finansal verileri gösteren modern arayüz grafiği"
+  },
+  "features": {
+    "title": "Finansal Hayatınızı Kolaylaştırın",
+    "subtitle": "FinArea'nın güçlü özellikleriyle tanışın.",
+    "feature1": { "title": "Akıllı Harcama Takibi", "description": "Banka ekstrelerinizi veya PDF'lerinizi yükleyin, FinArea AI ile harcamalarınızı otomatik olarak kategorize etsin." },
+    "feature2": { "title": "Görsel Analiz ve Raporlar", "description": "Harcama alışkanlıklarınızı anlaşılır grafikler ve aylık raporlarla görselleştirin, nereye ne kadar harcadığınızı net görün." },
+    "feature3": { "title": "AI Destekli Bütçe Planlama", "description": "Geçmiş verilerinize dayanarak gelecek ay bütçenizi tahmin edin. Yapay zeka destekli önerilerle gerçekçi hedefler belirleyin." },
+    "feature4": { "title": "Kişiselleştirilmiş Tavsiyeler", "description": "Harcama örüntülerinize göre tasarruf edebileceğiniz alanları keşfedin ve finansal sağlığınızı iyileştirecek ipuçları alın." }
+  },
+  "howItWorks": {
+    "title": "Sadece 3 Basit Adımda Başlayın",
+    "step1": { "title": "Verilerinizi Bağlayın/Yükleyin", "description": "Banka hesaplarınızı güvenli bir şekilde bağlayın veya PDF ekstrelerinizi kolayca yükleyin. Verileriniz şifrelenir ve korunur." },
+    "step2": { "title": "AI Analiz Etsin", "description": "FinArea'nın gelişmiş yapay zekası verilerinizi işler, harcamaları otomatik olarak sınıflandırır ve anlamlı özetler sunar." },
+    "step3": { "title": "Planlayın ve Başarın", "description": "Bütçenizi oluşturun, ilerlemenizi takip edin, AI tahminlerini ve kişisel tavsiyeleri kullanarak finansal kontrolü elinize alın." }
+  },
+  "footer": {
+    "infoTitle": "Keşfet",
+    "resourcesTitle": "Kaynaklar",
+    "legalTitle": "Yasal",
+    "copyright": "© {year} FinArea. Tüm Hakları Saklıdır."
+  },
+  "whyFinArea": {
+    "title": "Finansal Geleceğiniz İçin Akıllı Seçim",
+    "subtitle": "FinArea, sadece verilerinizi görselleştirmekle kalmaz, yapay zeka gücüyle finansal kararlarınızı destekler ve hedeflerinize daha hızlı ulaşmanızı sağlar.",
+    "benefitAi": { "title": "Akıllı Yapay Zeka", "description": "Sadece takip etmekle kalmaz, verilerinizi anlayarak size özel içgörüler ve proaktif öneriler sunar." },
+    "benefitSecurity": { "title": "Banka Düzeyinde Güvenlik", "description": "Verileriniz en yüksek güvenlik standartlarıyla şifrelenir ve saklanır. Gizliliğiniz bizim önceliğimizdir." },
+    "benefitUi": { "title": "Kullanıcı Dostu Arayüz", "description": "Karmaşık finansal verileri bile kolayca anlayabileceğiniz basit, sezgisel ve modern bir tasarım." },
+    "benefitTime": { "title": "Zaman Kazanın", "description": "Manuel veri girişini ve karmaşık hesaplamaları unutun. FinArea otomasyonla size zaman kazandırır." }
+  },
+  "finalCta": {
+    "title": "Finansal Özgürlüğe İlk Adımı Atın!",
+    "subtitle": "FinArea'ya bugün ücretsiz katılın ve paranızı daha akıllıca yönetmeye başlayın.",
+    "button": "Şimdi Kaydol"
+  },
+  "footer": {
+    "about": "Hakkımızda",
+    "careers": "Kariyer",
+    "blog": "Blog",
+    "contact": "İletişim",
+    "help": "Yardım Merkezi",
+    "faq": "SSS",
+    "security": "Güvenlik",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Koşulları",
+    "cookies": "Çerez Politikası",
+    "follow": "Bizi Takip Edin",
+    "copyright": "© {year} FinArea. Tüm Hakları Saklıdır.",
+    "description": "Yapay zeka destekli kişisel finans yönetimi."
+  }
+
+}
