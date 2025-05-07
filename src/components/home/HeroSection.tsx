@@ -11,9 +11,9 @@ const HeroSection = ({ locale }:hero) => {
 
     return (
         <section className="bg-gradient-to-b from-blue-50 via-white to-white pt-20 pb-12 px-4 sm:px-6 lg:px-8 mb-[35vh] md:mb-[30vh]">
-            <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center">
+            <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center" >
                 {/* Metin İçeriği */}
-                <div className="text-center lg:text-left">
+                <div className="text-center lg:text-left" >
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
                         {t.title || 'Başlık Yükleniyor...'}
                     </h1>
@@ -34,10 +34,11 @@ const HeroSection = ({ locale }:hero) => {
                 <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
                     <div className="relative w-full max-w-xl h-96 rounded-lg overflow-hidden shadow-xl"> {/* Aspect ratio eklendi */}
                         <Image
-                            src="/images/futuristic.png" // Resim public klasöründe olmalı
+                            src="/images/futuristic.png"
                             alt={t.imageAlt || 'FinArea Görseli'}
                             layout="fill"
-                            objectFit="cover" // Veya "contain"
+                            objectFit="cover"
+                            objectPosition="top"
                             priority
                         />
                     </div>

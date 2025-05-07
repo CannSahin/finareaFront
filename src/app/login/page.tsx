@@ -75,6 +75,7 @@ export default function LoginPage(): JSX.Element {
             if (response.ok && 'accessToken' in data) {
                 console.log('Login successful:', data);
                 localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('userId', data.accessToken);
                 router.push('/dashboard');
             } else {
                 const errorData = data as ErrorResponseDto;

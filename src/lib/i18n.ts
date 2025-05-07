@@ -47,3 +47,6 @@ export const t = (translations: TranslationData, key: string, fallback: any = ''
     }
     return result ?? fallback; // Nullish coalescing ile null/undefined için fallback
 };
+
+export class Locale {
+}

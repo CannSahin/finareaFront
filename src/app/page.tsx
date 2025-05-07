@@ -19,7 +19,7 @@ export default function HomePage(): JSX.Element {
     const [locale, setLocale] = useState<Locale>('tr');
 
     return (
-        <div className="flex flex-col min-h-screen bg-white">
+        <div className="flex flex-col min-h-screen bg-white" >
             {/* Header: Dil seçimi ve state güncelleme fonksiyonunu içerir */}
             <Header locale={locale} setLocale={setLocale} />
 
