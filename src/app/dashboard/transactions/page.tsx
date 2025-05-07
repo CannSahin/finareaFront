@@ -2,7 +2,7 @@
 
 import React, { useState, JSX } from 'react';
 // Güncellenmiş TransactionsList componentini (artık özet gösteriyor) import et
-import TransactionsList from '@/app/dashboard/TransactionsList';
+import TransactionsList from '@/app/dashboard/transactions/TransactionsList';
 // Locale import yolu (kendi projenize göre doğrulayın)
 import { Locale } from '@/lib/i18n';
 
