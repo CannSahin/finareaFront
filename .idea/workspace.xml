@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="Before major changes of dashboard page.">
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/TransactionsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/SpendingChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/SpendingChart.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/transactions/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/page.tsx" afterDir="false" />
+    <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="Some changes in the dashboard page.">
+      <change afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/ManualTransactionModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +94,8 @@
       <workItem from="1746371286755" duration="16939000" />
       <workItem from="1746432751141" duration="17992000" />
       <workItem from="1746554816681" duration="5871000" />
-      <workItem from="1746642866576" duration="4333000" />
+      <workItem from="1746642866576" duration="7317000" />
+      <workItem from="1746726070723" duration="2433000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -111,7 +113,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746645749156</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Some changes in the dashboard page.">
+      <option name="closed" value="true" />
+      <created>1746647475463</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1746647475463</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -125,6 +135,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />
     <MESSAGE value="Before major changes of dashboard page." />
-    <option name="LAST_COMMIT_MESSAGE" value="Before major changes of dashboard page." />
+    <MESSAGE value="Some changes in the dashboard page." />
+    <option name="LAST_COMMIT_MESSAGE" value="Some changes in the dashboard page." />
   </component>
 </project>
