@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="Some changes in the dashboard page.">
-      <change afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/ManualTransactionModal.tsx" afterDir="false" />
+    <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="Removed some unnecessary symbol and things.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +94,7 @@
       <workItem from="1746432751141" duration="17992000" />
       <workItem from="1746554816681" duration="5871000" />
       <workItem from="1746642866576" duration="7317000" />
-      <workItem from="1746726070723" duration="2433000" />
+      <workItem from="1746726070723" duration="6399000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -121,7 +120,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746647475463</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added manual expense entry.">
+      <option name="closed" value="true" />
+      <created>1746729352491</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746729352491</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -136,6 +143,8 @@
     <MESSAGE value="first commit" />
     <MESSAGE value="Before major changes of dashboard page." />
     <MESSAGE value="Some changes in the dashboard page." />
-    <option name="LAST_COMMIT_MESSAGE" value="Some changes in the dashboard page." />
+    <MESSAGE value="Added manual expense entry." />
+    <MESSAGE value="Removed some unnecessary symbol and things." />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed some unnecessary symbol and things." />
   </component>
 </project>

@@ -210,7 +210,6 @@ export default function DashboardPage(): JSX.Element | null {
                                         <div className="text-right">
                                             <p className="text-sm text-gray-500">Toplam Harcama</p>
                                             <p className="text-2xl font-bold text-red-600 flex items-center justify-end">
-                                                <FiDollarSign className="mr-1"/>
                                                 {summaryDataFS.grandTotal?.toLocaleString(locale, { style: 'currency', currency: 'TRY' }) || '-'}
                                             </p>
                                         </div>

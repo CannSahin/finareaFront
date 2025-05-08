@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo, JSX } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiLoader, FiAlertTriangle, FiDollarSign, FiCalendar, FiArchive, FiGrid, FiPlusSquare, FiUploadCloud } from 'react-icons/fi';
+import { FiLoader, FiAlertTriangle, FiCalendar, FiArchive, FiGrid, FiPlusSquare, FiUploadCloud } from 'react-icons/fi';
 import ManualTransactionModal from './ManualTransactionModal'; // Modal importu
 
 // --- Tipler (Mevcut Tipleriniz) ---
@@ -387,7 +387,7 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
                                 <div className="p-3 bg-white rounded shadow">
                                     <p className="text-sm text-gray-500">{locale === 'tr' ? 'Dönem Toplam Harcaması':'Total Spending (Period)'}</p>
                                     <p className="text-2xl font-bold text-red-600 flex items-center">
-                                        <FiDollarSign className="mr-2" /> {formatCurrency(summaryData.grandTotal)}
+                                        {formatCurrency(summaryData.grandTotal)}
                                     </p>
                                 </div>
                             </div>

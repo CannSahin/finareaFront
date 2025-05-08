@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiBarChart2, FiDollarSign, FiFilter, FiLoader, FiAlertTriangle } from 'react-icons/fi';
+import { FiCalendar,FiLoader, FiAlertTriangle } from 'react-icons/fi';
 import CategoryTotalsDisplay from './components/CategoryTotalsCard'; // Yeni bileşen
 import SpendingChart from './components/SpendingChart';          // Yeni bileşen
 
@@ -153,7 +153,6 @@ const FinancialStatusPage = () => {
                             <div className="text-right">
                                 <p className="text-sm text-gray-500">Toplam Harcama</p>
                                 <p className="text-2xl font-bold text-red-600 flex items-center justify-end">
-                                    <FiDollarSign className="mr-1"/>
                                     {summaryData.grandTotal?.toLocaleString(locale, { style: 'currency', currency: 'TRY' }) || '-'}
                                 </p>
                             </div>
