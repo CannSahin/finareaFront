@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useCallback, useMemo, JSX } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiLoader, FiAlertTriangle, FiCalendar, FiArchive, FiGrid, FiPlusSquare, FiUploadCloud } from 'react-icons/fi';
-import ManualTransactionModal from './ManualTransactionModal'; // Modal importu
+import ManualTransactionModal from './ManualTransactionModal';
+import StatementUploadModal, { FileUploadResponseDto } from './StatementUploadModal'; // Import StatementUploadModal and its DTO
 
 // --- Tipler (Mevcut Tipleriniz) ---
 type Locale = 'tr' | 'en';
@@ -27,13 +28,13 @@ interface PeriodSummaryResponseDto {
     grandTotal: number;
 }
 
-// Modal için gerekli DTO'yu ve kategori tipini burada (veya modal dosyasında) tanımlayalım
-interface CategoryForModal { // Bu tip TransactionsList içinde kullanılacak
-    id: number; // Backend Category ID'si
-    name: string; // Locale'e göre gösterilecek isim
+interface CategoryForModal {
+    id: number;
+    name: string;
+    type: 'EXPENSE' | 'INCOME'; // Added type for better filtering if needed
 }
 
-interface ManualTransactionRequestDtoForModal { // Bu tip TransactionsList içinde kullanılacak
+interface ManualTransactionRequestDtoForModal {
     year: number;
     month: number;
     categoryId: number;
@@ -59,10 +60,6 @@ interface TransactionsListProps {
     locale: Locale;
 }
 
-// KATEGORİLERİ BURADA SABİT OLARAK TANIMLAYALIM (VEYA BACKEND'DEN ÇEKİP CACHE'LEYEBİLİRSİNİZ)
-// Backend'den gelen kategori ID'leri ile eşleşmeli
-// Bu örnekte, bu kategorilerin ID'lerinin 1, 2, 3 vs. olduğunu varsayıyoruz.
-// GERÇEK KATEGORİ ID'LERİNİZ VE İSİMLERİNİZLE GÜNCELLEYİN
 const FALLBACK_CATEGORIES_TR: CategoryForModal[] = [
     { id: 1, name: 'Market / Gıda', type: 'EXPENSE' },
     { id: 2, name: 'Yeme İçme / Restoran', type: 'EXPENSE' },
@@ -77,7 +74,6 @@ const FALLBACK_CATEGORIES_TR: CategoryForModal[] = [
     { id: 11, name: 'Seyahat / Konaklama', type: 'EXPENSE' },
     { id: 12, name: 'Spor', type: 'EXPENSE' },
     { id: 98, name: 'Diğer / Belirsiz', type: 'EXPENSE' },
-    // Gelir Kategorileri
     { id: 101, name: 'Maaş', type: 'INCOME' },
     { id: 102, name: 'Diğer Gelir', type: 'INCOME' },
 ];
@@ -96,7 +92,6 @@ const FALLBACK_CATEGORIES_EN: CategoryForModal[] = [
     { id: 11, name: 'Travel / Accommodation', type: 'EXPENSE' },
     { id: 12, name: 'Sports', type: 'EXPENSE' },
     { id: 98, name: 'Other / Uncategorized', type: 'EXPENSE' },
-    // Income Categories
     { id: 101, name: 'Salary', type: 'INCOME' },
     { id: 102, name: 'Other Income', type: 'INCOME' },
 ];
@@ -109,7 +104,6 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
     const [error, setError] = useState<string | null>(null);
     const [submissionStatus, setSubmissionStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
 
@@ -119,27 +113,24 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
     const yearOptions = useMemo(() => Array.from({ length: 6 }, (_, i) => currentYear - i), [currentYear]);
     const monthOptions = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
 
-    // ---- Modal State ----
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    // ---- Modal State Sonu ----
+    // ---- Manual Transaction Modal State ----
+    const [isManualModalOpen, setIsManualModalOpen] = useState(false);
+    // ---- Statement Upload Modal State ----
+    const [isStatementUploadModalOpen, setIsStatementUploadModalOpen] = useState(false);
 
-    // Modal'a gönderilecek kategori listesi
     const categoriesForModal: CategoryForModal[] = useMemo(() => {
-        // İdealde backend'den çekilen güncel kategori listesi kullanılır.
-        // Şimdilik sabit listeyi kullanalım veya summaryData'dan türetelim.
-        // Eğer summaryData.overallCategoryTotals varsa ve ID'leri varsa oradan alınabilir.
-        // Bu örnekte sabit listeyi kullanıyoruz:
         return locale === 'tr' ? FALLBACK_CATEGORIES_TR : FALLBACK_CATEGORIES_EN;
     }, [locale]);
 
 
     const fetchSummaryData = useCallback(async (year: number, month: number, showSpinner: boolean = true) => {
         if (showSpinner) setIsLoading(true);
-        setError(null); // Her fetch öncesi hatayı sıfırla
-        setSubmissionStatus(null); // Her fetch öncesi submit durumunu sıfırla
+        setError(null);
+        // Do not clear submissionStatus here, as it might be set by modal success before this call
+        // setSubmissionStatus(null);
         const token = localStorage.getItem('accessToken');
         if (!token) {
-            setError("Kimlik doğrulaması gerekli. Lütfen giriş yapın.");
+            setError(locale === 'tr' ? "Kimlik doğrulaması gerekli. Lütfen giriş yapın." : "Authentication required. Please log in.");
             if (showSpinner) setIsLoading(false);
             router.push('/login');
             return;
@@ -152,23 +143,23 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             });
             if (response.status === 401) {
-                setError("Oturum süresi dolmuş veya geçersiz.");
+                setError(locale === 'tr' ? "Oturum süresi dolmuş veya geçersiz." : "Session expired or invalid.");
                 localStorage.removeItem('accessToken'); localStorage.removeItem('userEmail');
                 router.push('/login'); if (showSpinner) setIsLoading(false); return;
             }
             if (!response.ok) {
-                const errorBody = await response.json().catch(() => ({ message: `API Hatası: ${response.status}` }));
+                const errorBody = await response.json().catch(() => ({ message: `${locale === 'tr' ? 'API Hatası' : 'API Error'}: ${response.status}` }));
                 throw new Error(errorBody.message);
             }
             const data: PeriodSummaryResponseDto = await response.json();
             setSummaryData(data);
         } catch (err: any) {
-            setError(err.message || "Özet verisi yüklenirken bir hata oluştu.");
+            setError(err.message || (locale === 'tr' ? "Özet verisi yüklenirken bir hata oluştu." : "An error occurred while loading summary data."));
             setSummaryData(null);
         } finally {
             if (showSpinner) setIsLoading(false);
         }
-    }, [router]);
+    }, [router, locale]);
 
     useEffect(() => {
         fetchSummaryData(selectedYear, selectedMonth);
@@ -180,91 +171,74 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
         summaryData.sources.forEach(source => {
             source.categorySummaries.forEach(catSum => categorySet.add(catSum.categoryName));
         });
-        return Array.from(categorySet).sort();
-    }, [summaryData]);
+        // Sort categories, potentially prioritizing specific ones or using a locale-sensitive sort
+        return Array.from(categorySet).sort((a, b) => a.localeCompare(b, locale === 'tr' ? 'tr-TR' : 'en-US'));
+    }, [summaryData, locale]);
 
-    const handleOpenModal = () => {
-        setSubmissionStatus(null); // Modalı açarken eski mesajları temizle
-        setIsModalOpen(true);
+    // --- Manual Transaction Modal Handlers ---
+    const handleOpenManualModal = () => {
+        setSubmissionStatus(null);
+        setIsManualModalOpen(true);
     };
+    const handleCloseManualModal = () => setIsManualModalOpen(false);
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleModalSubmit = async (data: ManualTransactionRequestDtoForModal) => {
+    const handleManualModalSubmit = async (data: ManualTransactionRequestDtoForModal) => {
         setSubmissionStatus(null);
         const token = localStorage.getItem('accessToken');
         if (!token) {
             router.push('/login');
             throw new Error(locale === 'tr' ? "Kimlik doğrulama gerekli." : "Authentication required.");
         }
-
         const MANUAL_TRANSACTION_API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/v1/transactions/manual`;
-
         try {
             const response = await fetch(MANUAL_TRANSACTION_API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(data),
             });
-
             if (response.status === 401) {
                 router.push('/login');
                 throw new Error(locale === 'tr' ? "Oturum süresi dolmuş." : "Session expired.");
             }
-
-            const responseBody = await response.json().catch(() => null); // Her zaman JSON parse etmeye çalış
-
+            const responseBody = await response.json().catch(() => null);
             if (!response.ok) {
                 const errorMessage = responseBody?.message || (locale === 'tr' ? 'İşlem kaydedilemedi.' : 'Failed to save transaction.');
                 throw new Error(errorMessage);
             }
-
-            // Backend'den TransactionResponseDto dönüyorsa:
-            // const savedTransaction: TransactionResponseDto = responseBody;
-            // console.log("Kaydedilen işlem:", savedTransaction);
-
             setSubmissionStatus({ type: 'success', message: locale === 'tr' ? 'Hareket başarıyla eklendi!' : 'Transaction added successfully!' });
-            handleCloseModal();
-            // Veriyi yeniden çek, bu sefer ana yükleyiciyi göstermeden
+            handleCloseManualModal();
             await fetchSummaryData(selectedYear, selectedMonth, false);
-
         } catch (error: any) {
             console.error('Manuel hareket ekleme hatası:', error);
             setSubmissionStatus({ type: 'error', message: error.message || (locale === 'tr' ? 'Hareket eklenirken bir hata oluştu.' : 'Error adding transaction.') });
-            // Modal'ın kendi içindeki hatayı göstermesi için hatayı fırlatıyoruz
             throw error;
         }
     };
 
+    // --- Statement Upload Modal Handlers ---
+    const handleOpenStatementUploadModal = () => {
+        setSubmissionStatus(null); // Clear previous messages
+        setIsStatementUploadModalOpen(true);
+    };
+    const handleCloseStatementUploadModal = () => setIsStatementUploadModalOpen(false);
 
-    const handleUploadStatement = () => {
-        console.log("Ekstre Yükle tıklandı");
-        // İlgili işlevsellik buraya eklenecek
+    const handleStatementUploadSuccess = async (uploadData: FileUploadResponseDto) => {
+        handleCloseStatementUploadModal();
+        setSubmissionStatus({
+            type: 'success',
+            message: locale === 'tr'
+                ? `Ekstre başarıyla işlendi: ${uploadData.sourceName}, ${uploadData.transactionCount} işlem bulundu. Veriler güncelleniyor...`
+                : `Statement processed successfully: ${uploadData.sourceName}, ${uploadData.transactionCount} transactions found. Updating data...`,
+        });
+        // Refresh the summary data for the currently selected period
+        // The backend should have processed the statement and the new transactions
+        // should be available for the period they belong to.
+        // If the statement contains transactions for a *different* period than selected,
+        // the user might need to navigate to that period to see them.
+        // For now, we refresh the *current* view.
+        await fetchSummaryData(selectedYear, selectedMonth, false);
     };
 
-    // if (isLoading && !summaryData) { // Sadece ilk yüklemede tam ekran yükleyici
-    //     return (
-    //         <div className="flex justify-center items-center py-10 min-h-[300px]">
-    //             <FiLoader className="animate-spin h-8 w-8 text-blue-600" />
-    //             <span className="ml-3 text-gray-600">{locale === 'tr' ? 'Veriler yükleniyor...' : 'Loading data...'}</span>
-    //         </div>
-    //     );
-    // }
-
-    // if (error && !summaryData && !isLoading) { // Sadece ilk yüklemede gösterilecek genel hata
-    //     return (
-    //         <div className="flex flex-col justify-center items-center py-10 text-red-600 bg-red-50 p-4 rounded border border-red-200 min-h-[300px]">
-    //            <FiAlertTriangle className="h-8 w-8 mb-2" />
-    //            <span className="text-lg font-semibold">{locale === 'tr' ? 'Bir Hata Oluştu' : 'An Error Occurred'}</span>
-    //            <span>{error}</span>
-    //        </div>
-    //     );
-    // }
 
     const renderFilters = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded border border-gray-200">
@@ -299,8 +273,7 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
         </div>
     );
 
-    // Tam sayfa yükleyici ve hata gösterimi için daha iyi bir mantık
-    if (isLoading && !summaryData) { // Sadece ilk yüklemede
+    if (isLoading && !summaryData) {
         return (
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow min-h-[400px] flex flex-col">
                 {renderFilters()}
@@ -312,17 +285,23 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
         );
     }
 
-
     return (
         <>
             <ManualTransactionModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                onSubmit={handleModalSubmit}
-                availableCategories={categoriesForModal}
+                isOpen={isManualModalOpen}
+                onClose={handleCloseManualModal}
+                onSubmit={handleManualModalSubmit}
+                availableCategories={categoriesForModal.filter(c => c.type === 'EXPENSE')} // Example: only expense for manual
                 initialYear={selectedYear}
                 initialMonth={selectedMonth}
                 locale={locale}
+            />
+
+            <StatementUploadModal
+                isOpen={isStatementUploadModalOpen}
+                onClose={handleCloseStatementUploadModal}
+                onUploadSuccess={handleStatementUploadSuccess}
+                // locale={locale} // Pass locale if StatementUploadModal supports it
             />
 
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
@@ -331,47 +310,58 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
                 <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between">
                     <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-4 sm:mb-0">
                         <button
-                            onClick={handleOpenModal}
-                            disabled={isLoading && !!summaryData} // Sadece veri güncellenirken disable
+                            onClick={handleOpenManualModal}
+                            disabled={isLoading && !!summaryData}
                             className="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60"
                         >
                             <FiPlusSquare className="mr-2 h-5 w-5" />
                             {locale === 'tr' ? 'Manuel Hareket Ekle' : 'Add Manual Transaction'}
                         </button>
                         <button
-                            onClick={handleUploadStatement}
-                            disabled={isLoading && !!summaryData} // Sadece veri güncellenirken disable
+                            onClick={handleOpenStatementUploadModal} // Updated onClick
+                            disabled={isLoading && !!summaryData}
                             className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-60"
                         >
                             <FiUploadCloud className="mr-2 h-5 w-5" />
                             {locale === 'tr' ? 'Ekstre Yükle' : 'Upload Statement'}
                         </button>
                     </div>
-                    {/* Anlık Yükleme / Hata / Başarı Durumu */}
-                    <div className="h-6"> {/* Yükseklik sabitliği için */}
+                    <div className="h-6">
                         {(isLoading && !!summaryData) && <div className="flex items-center text-sm text-gray-500"><FiLoader className="animate-spin mr-2 h-4 w-4" /> {locale === 'tr' ? 'Veriler güncelleniyor...' : 'Updating data...'}</div>}
                         {error && <div className="text-sm text-red-500"><FiAlertTriangle className="inline mr-1 mb-0.5"/> {error}</div>}
                         {submissionStatus?.type === 'success' && <div className="text-sm text-green-600">{submissionStatus.message}</div>}
-                        {submissionStatus?.type === 'error' && !isModalOpen && <div className="text-sm text-red-600">{submissionStatus.message}</div>} {/* Modal kapalıyken submit hatasını göster */}
+                        {submissionStatus?.type === 'error' && !isManualModalOpen && !isStatementUploadModalOpen && <div className="text-sm text-red-600">{submissionStatus.message}</div>}
                     </div>
                 </div>
 
-
-                {(!summaryData || !summaryData.sources || summaryData.sources.length === 0) && !(isLoading && !summaryData) && (
+                {(!summaryData || !summaryData.sources || summaryData.sources.length === 0) && !(isLoading && !summaryData) && !error && (
                     <div className="text-center py-10 text-gray-500">
-                        {error ? error : (locale === 'tr' ? 'Seçili dönem için gösterilecek veri bulunamadı.' : 'No data found for the selected period.')}
+                        <FiArchive className="mx-auto h-12 w-12 text-gray-400 mb-3" />
+                        <p className="text-lg font-medium">
+                            {locale === 'tr' ? 'Veri Bulunamadı' : 'No Data Found'}
+                        </p>
+                        <p className="text-sm">
+                            {locale === 'tr' ? 'Seçili dönem için gösterilecek veri bulunamadı.' : 'No data found for the selected period.'}
+                            {locale === 'tr' ? ' Yeni bir ekstre yükleyebilir veya manuel hareket ekleyebilirsiniz.' : ' You can upload a new statement or add a manual transaction.'}
+                        </p>
+                    </div>
+                )}
+                {error && !isLoading && (!summaryData || summaryData.sources.length === 0) && (
+                    <div className="flex flex-col justify-center items-center py-10 text-red-600 bg-red-50 p-4 rounded border border-red-200 min-h-[150px]">
+                        <FiAlertTriangle className="h-8 w-8 mb-2" />
+                        <span className="text-lg font-semibold">{locale === 'tr' ? 'Bir Hata Oluştu' : 'An Error Occurred'}</span>
+                        <span>{error}</span>
                     </div>
                 )}
 
+
                 {summaryData && summaryData.sources && summaryData.sources.length > 0 && (
                     <>
-                        {/* Özet Bilgiler */}
                         <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                             <h2 className="text-xl font-semibold text-blue-700 mb-3 flex items-center">
                                 <FiCalendar className="mr-2" /> {locale === 'tr' ? 'Dönem Özeti' : 'Period Summary'}: {summaryData.periodName}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {/* ... Özet kartları ... */}
                                 <div className="p-3 bg-white rounded shadow">
                                     <p className="text-sm text-gray-500">{locale === 'tr' ? 'Toplam Kaynak Sayısı':'Total Sources'}</p>
                                     <p className="text-2xl font-bold text-blue-600 flex items-center">
@@ -393,10 +383,8 @@ export default function TransactionsList({ locale }: TransactionsListProps): JSX
                             </div>
                         </div>
 
-                        {/* Excel Benzeri Tablo */}
                         <h3 className="text-lg font-medium text-gray-800 mb-3">{locale === 'tr' ? 'Harcama Detayları (Kaynak Bazında)' : 'Spending Details (By Source)'}</h3>
                         <div className="overflow-x-auto">
-                            {/* ... Mevcut tablo yapınız ... */}
                             <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
                                 <thead className="bg-gray-100">
                                 <tr>

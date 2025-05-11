@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="Removed some unnecessary symbol and things.">
+      <change afterPath="$PROJECT_DIR$/src/app/dashboard/savings-advisor/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/StatementUploadModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" afterDir="false" />
     </list>
@@ -94,7 +95,10 @@
       <workItem from="1746432751141" duration="17992000" />
       <workItem from="1746554816681" duration="5871000" />
       <workItem from="1746642866576" duration="7317000" />
-      <workItem from="1746726070723" duration="6399000" />
+      <workItem from="1746726070723" duration="9825000" />
+      <workItem from="1746778142889" duration="7375000" />
+      <workItem from="1746906230217" duration="3235000" />
+      <workItem from="1746961604648" duration="11479000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -128,7 +132,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746729352491</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Removed some unnecessary symbol and things.">
+      <option name="closed" value="true" />
+      <created>1746733112997</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1746733112997</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -3,7 +3,8 @@
 
 import React, { useState, useEffect, useCallback, useMemo, JSX } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // Link'i kullanacağız ama sayfa içi render için doğrudan state değişimine odaklanacağız.
+// Link bu örnekte direkt kullanılmıyor ama projenizde başka yerlerde olabilir
+// import Link from 'next/link';
 import Image from 'next/image';
 import {
     FiLogOut,
@@ -14,43 +15,42 @@ import {
     FiCalendar,
     FiLoader,
     FiAlertTriangle,
-    FiPlusSquare, // Manuel Ekle ikonu
-    FiUploadCloud // Ekstre Yükle ikonu
+    FiTarget, // Tasarruf Danışmanı için ikon
+    // FiPlusSquare, // Bunlar StatementUploadModal içinde olabilir
+    // FiUploadCloud // Bunlar StatementUploadModal içinde olabilir
 } from 'react-icons/fi';
 import Footer from "@/components/layout/Footer";
-import { Locale } from "@/app/page";
+import { Locale } from "@/app/page"; // Varsayılan locale tipiniz
 
-// --- FinancialStatusPage'den taşınan tipler ve bileşenler ---
+// --- FinancialStatusPage'den taşınan tipler ---
 interface CategorySummaryDto {
     categoryName: string;
     totalAmount: number;
 }
 
-interface PeriodSummaryResponseDtoFS { // Financial Status için olan DTO
+interface PeriodSummaryResponseDtoFS {
     year: number;
     month: number;
     periodName: string;
-    sources: any[]; // Bu sayfada direkt kullanılmayacak ama DTO'nun bir parçası
+    sources: any[];
     overallCategoryTotals: CategorySummaryDto[];
     grandTotal: number;
 }
-
 // --- FinancialStatusPage Sonu ---
 
-
-// --- TransactionsList'ten (Finans Hareketleri) gelen tipler ve mantık için alan ---
-// TransactionsList'in kendi içindeki DTO'ları kullanacağız.
-// TransactionsPage'i import etmeyeceğiz, onun yerine TransactionsList componentini direkt kullanacağız.
 import CategoryTotalsDisplay from "@/app/dashboard/financal-status/components/CategoryTotalsCard";
 import SpendingChart from "@/app/dashboard/financal-status/components/SpendingChart";
-import TransactionsList from "@/app/dashboard/transactions/TransactionsList"; // TransactionsList bileşeninin doğru yolu
+import TransactionsList from "@/app/dashboard/transactions/TransactionsList";
+
+// Yeni Tasarruf Danışmanı sayfasını import edin (oluşturduktan sonra)
+import SavingsAdvisorPage from '@/app/dashboard/savings-advisor/page'; // Doğru yolu ayarlayın
 
 interface UserInfo {
     email: string | null;
 }
 
-// Hangi içeriğin gösterileceğini belirleyen tip
-type DashboardView = 'financialStatus' | 'transactions';
+// Hangi içeriğin gösterileceğini belirleyen tip güncellendi
+type DashboardView = 'financialStatus' | 'transactions' | 'savingsAdvisor';
 
 export default function DashboardPage(): JSX.Element | null {
     const router = useRouter();
@@ -59,13 +59,12 @@ export default function DashboardPage(): JSX.Element | null {
     const [locale, setLocale] = useState<Locale>('tr');
     const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
 
-    // --- Aktif görünümü tutacak state ---
-    const [activeView, setActiveView] = useState<DashboardView>('financialStatus'); // Varsayılan olarak finansal durumu göster
+    const [activeView, setActiveView] = useState<DashboardView>('financialStatus');
 
-    // --- FinancialStatusPage State ve Mantığı BAŞLANGIÇ ---
+    // --- FinancialStatusPage State ve Mantığı ---
     const [summaryDataFS, setSummaryDataFS] = useState<PeriodSummaryResponseDtoFS | null>(null);
-    const [isSummaryLoadingFS, setIsSummaryLoadingFS] = useState<boolean>(false); // Financial Status için ayrı loading
-    const [summaryErrorFS, setSummaryErrorFS] = useState<string | null>(null); // Financial Status için ayrı error
+    const [isSummaryLoadingFS, setIsSummaryLoadingFS] = useState<boolean>(false);
+    const [summaryErrorFS, setSummaryErrorFS] = useState<string | null>(null);
 
     const currentYearFS = new Date().getFullYear();
     const currentMonthFS = new Date().getMonth() + 1;
@@ -80,14 +79,16 @@ export default function DashboardPage(): JSX.Element | null {
         setSummaryErrorFS(null);
         const token = localStorage.getItem('accessToken');
         if (!token) {
-            // Ana yükleme zaten yönlendirme yapar, burada sadece API çağrısını durduruyoruz
             setSummaryErrorFS("Kimlik doğrulaması gerekli.");
             setIsSummaryLoadingFS(false);
-            router.push('/login'); // Ekstra güvenlik
+            router.push('/login');
             return;
         }
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+        // UserId'yi de URL'ye eklemeniz gerekebilir (backend'e göre)
+        // Şimdiki backend /year/month alıyor, userId token'dan çözülüyor varsayımıyla devam ediyorum.
         const finalApiUrl = `${API_URL}/api/v1/summaries/expenses/${year}/${month}`;
+
 
         try {
             const response = await fetch(finalApiUrl, {
@@ -109,27 +110,23 @@ export default function DashboardPage(): JSX.Element | null {
     }, [router]);
 
     useEffect(() => {
-        if (!isPageLoading && activeView === 'financialStatus') {
-            fetchFinancialSummary(selectedYearFS, selectedMonthFS);
-        }
-    }, [selectedYearFS, selectedMonthFS, fetchFinancialSummary, isPageLoading, activeView]);
-    // --- FinancialStatusPage State ve Mantığı SON ---
-
-
-    // --- TransactionsList (Finans Hareketleri) için state veya effect'ler burada olabilir ---
-    // TransactionsList kendi içinde veri çekme mantığına sahip olduğu için burada ek bir state'e şimdilik gerek yok.
-    // Eğer TransactionsList'i bu sayfadan tetiklemek gerekirse (örneğin yıl/ay filtreleri ortaksa), o zaman buraya da state'ler eklenebilir.
-
-    useEffect(() => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
             router.push('/login');
         } else {
             const userEmail = localStorage.getItem('userEmail');
             setUserInfo({ email: userEmail || 'User' });
-            setIsPageLoading(false);
+            setIsPageLoading(false); // Token varsa ana yükleme tamamlandı
         }
     }, [router]);
+
+    // Financial status verilerini sadece o görünüm aktifken ve ana sayfa yüklenmesi bittikten sonra çek
+    useEffect(() => {
+        if (!isPageLoading && activeView === 'financialStatus') {
+            fetchFinancialSummary(selectedYearFS, selectedMonthFS);
+        }
+    }, [selectedYearFS, selectedMonthFS, fetchFinancialSummary, isPageLoading, activeView]);
+
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -228,13 +225,13 @@ export default function DashboardPage(): JSX.Element | null {
                 );
             case 'transactions':
                 return (
-                    // TransactionsPage'in içeriği buraya gelecek, TransactionsList'i çağıracağız
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">Finans Hareketleri Özeti</h1>
-                        {/* TransactionsList componentini burada çağırıyoruz */}
+                        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">Finans Hareketleri</h1>
                         <TransactionsList locale={locale} />
                     </div>
                 );
+            case 'savingsAdvisor': // YENİ GÖRÜNÜM
+                return <SavingsAdvisorPage locale={locale} />;
             default:
                 return null;
         }
@@ -242,10 +239,11 @@ export default function DashboardPage(): JSX.Element | null {
 
     return (
         <div className="flex h-screen bg-gray-100">
+            {/* Sidebar */}
             <aside className={`absolute inset-y-0 left-0 z-30 w-64 bg-gray-800 text-white transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex lg:flex-col`}>
                 <div className="flex items-center justify-between h-16 px-4 bg-gray-900">
-                    <button onClick={() => router.push('/dashboard')} className="flex items-center"> {/* Link yerine button + router.push */}
-                        <Image src="/images/logoo.png" alt="FinArea Logo" width={60} height={60} />
+                    <button onClick={() => router.push('/dashboard')} className="flex items-center">
+                        <Image src="/images/logoo.png" alt="FinEra Logo" width={60} height={60} />
                     </button>
                     <button onClick={() => setIsSidebarOpen(false)} className="text-gray-400 hover:text-white lg:hidden">
                         <FiX className="h-6 w-6" />
@@ -254,29 +252,37 @@ export default function DashboardPage(): JSX.Element | null {
                 <nav className="flex-1 px-2 py-4 space-y-2">
                     <button
                         onClick={() => setActiveView('financialStatus')}
-                        className={`flex items-center w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'financialStatus' ? 'bg-gray-700 text-white' : ''}`}
+                        className={`flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'financialStatus' ? 'bg-gray-700 text-white' : ''}`}
                     >
                         <FiDollarSign className="mr-3 h-5 w-5" />
                         Finansal Durum
                     </button>
                     <button
                         onClick={() => setActiveView('transactions')}
-                        className={`flex items-center w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'transactions' ? 'bg-gray-700 text-white' : ''}`}
+                        className={`flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'transactions' ? 'bg-gray-700 text-white' : ''}`}
                     >
                         <FiTrendingUp className="mr-3 h-5 w-5" />
                         Finans Hareketleri
                     </button>
-
+                    {/* YENİ BUTON */}
+                    <button
+                        onClick={() => setActiveView('savingsAdvisor')}
+                        className={`flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'savingsAdvisor' ? 'bg-gray-700 text-white' : ''}`}
+                    >
+                        <FiTarget className="mr-3 h-5 w-5" /> {/* Tasarruf ikonu */}
+                        Tasarruf Danışmanı
+                    </button>
                 </nav>
                 <div className="px-2 py-4 mt-auto border-t border-gray-700">
                     <p className="px-4 text-xs text-gray-400 truncate mb-2">{userInfo.email}</p>
-                    <button onClick={handleLogout} className="flex items-center w-full px-4 py-2 text-red-400 hover:bg-red-700 hover:text-white rounded-md">
+                    <button onClick={handleLogout} className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-red-700 hover:text-white rounded-md">
                         <FiLogOut className="mr-3 h-5 w-5" />
                         Çıkış Yap
                     </button>
                 </div>
             </aside>
 
+            {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden">
                 <header className="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 lg:hidden">
                     <button onClick={() => setIsSidebarOpen(true)} className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
