@@ -57,6 +57,63 @@
     "follow": "Bizi Takip Edin",
     "copyright": "© {year} FinArea. Tüm Hakları Saklıdır.",
     "description": "Yapay zeka destekli kişisel finans yönetimi."
-  }
+  },
+  "loginPage": {
+    "title": "Giriş Yap",
+    "subtitle": "FinArea: Kişisel Finans Planlayıcınız",
+    "header": "Paranızı biriktirmeye başlamak için giriş yapın!",
+    "emailLabel": "Kullanıcı Adınız veya E-postanız",
+    "emailPlaceholder": "siz@example.com",
+    "passwordLabel": "Şifre",
+    "passwordPlaceholder": "********",
+    "logInButton": "Giriş Yap",
+    "loggingInButton": "Giriş Yapılıyor...",
+    "orSeparator": "VEYA",
+    "loginWithGoogle": "Google ile Giriş Yap",
+    "noAccount": "Hesabınız yok mu?",
+    "signUpLink": "Kaydolun",
+    "forgotPassword": "Şifrenizi mi unuttunuz?",
+    "resetPasswordLink": "Şifreyi Sıfırla",
+    "termsOfService": "Hizmet Şartları",
+    "privacyPolicy": "Gizlilik Politikası",
+    "and": "ve",
+    "errorMessages": {
+      "unexpected": "Beklenmedik bir hata oluştu.",
+      "networkError": "Ağ Hatası: {message}. Lütfen bağlantınızı kontrol edin veya daha sonra tekrar deneyin.",
+      "unknownNetworkError": "Bilinmeyen bir ağ hatası oluştu."
+    }
+  },
 
+  "financialStatusPage": {
+    "title": "Finansal Durum",
+    "filterLabelYear": "Yıl",
+    "filterLabelMonth": "Ay",
+    "loading": "Yükleniyor...",
+    "errorTitle": "Bir hata oluştu:",
+    "noDataForPeriod": "Seçili dönem için gösterilecek finansal veri bulunamadı.",
+    "periodSummaryTitleSuffix": "Özeti",
+    "totalSpendingLabel": "Toplam Harcama",
+    "authRequiredError": "Kimlik doğrulaması gerekli. Lütfen giriş yapın.",
+    "sessionExpiredError": "Oturum süresi dolmuş veya geçersiz. Lütfen tekrar giriş yapın.",
+    "apiErrorPrefix": "API Hatası:",
+    "dataLoadError": "Veriler yüklenirken bir hata oluştu.",
+    "categoryTotals": {
+      "title": "Kategori Harcama Dağılımı",
+      "noSpendingForPeriod": "Bu dönem için kategori harcaması bulunmamaktadır."
+    },
+    "spendingChart": {
+      "title": "Harcama Grafiği",
+      "noData": "Gösterilecek harcama verisi bulunmamaktadır.",
+      "barChartLabel": "Çubuk",
+      "pieChartLabel": "Pasta",
+      "spendingLabelSuffix": "Harcamaları",
+      "distributionLabel": "Harcama Dağılımı",
+      "barChartTitleSuffix": "Kategori Harcamaları (Çubuk)",
+      "pieChartTitleSuffix": "Kategori Harcamaları (Pasta)"
+    },
+    "langSwitcher": {
+      "trLabel": "Türkçe Dil Seçeneği",
+      "enLabel": "English Language Option"
+    }
+  }
 }

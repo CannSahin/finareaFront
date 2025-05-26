@@ -1,13 +1,15 @@
-// app/login/page.tsx
 'use client';
 
-import React, { useState, FormEvent, JSX } from 'react';
+import React, { useState, FormEvent, JSX, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn } from 'react-icons/fi';
+// FcGoogle'ı kullanmayacaksanız yorum satırında kalsın veya silin
 // import { FcGoogle } from 'react-icons/fc';
+import { getTranslations, t as i18nLibraryT, TranslationData } from '@/lib/i18n'; // Güncellenmiş import
 
+// Arayüzler (Interfaces)
 interface LoginResponseDto {
     accessToken: string;
     tokenType?: string;
@@ -25,7 +27,13 @@ interface ErrorResponseDto {
 
 type ApiResponse = LoginResponseDto | ErrorResponseDto;
 
+// Desteklenen diller için bir tip oluşturalım
+type SupportedLocale = 'tr' | 'en';
+
 export default function LoginPage(): JSX.Element {
+    const [currentLocale, setCurrentLocale] = useState<SupportedLocale>('tr'); // Başlangıç dili
+    const [allTranslations, setAllTranslations] = useState<TranslationData | null>(null); // Tüm çeviriler
+
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -36,14 +44,29 @@ export default function LoginPage(): JSX.Element {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
+    // Dil değiştiğinde çevirileri yükle
+    useEffect(() => {
+        setAllTranslations(getTranslations(currentLocale));
+    }, [currentLocale]);
+
+    // Component içinde kullanılan 't' helper fonksiyonu
+    // Bu fonksiyon, import ettiğimiz 'i18nLibraryT' yi kullanacak.
+    const t = (fullKey: string, fallback?: any): string => {
+        if (!allTranslations) return fallback || fullKey;
+        // fullKey 'loginPage.title' gibi olmalı.
+        return i18nLibraryT(allTranslations, fullKey, fallback || fullKey);
+    };
+
     const extractErrorMessage = (data: ErrorResponseDto): string => {
+        const unexpectedErrorMsg = t('loginPage.errorMessages.unexpected', "An unexpected error occurred.");
+
         if (data.validationErrors) {
             const firstErrorField = Object.keys(data.validationErrors)[0];
             if (firstErrorField) {
                 return `${firstErrorField}: ${data.validationErrors[firstErrorField]}`;
             }
         }
-        return data.message || data.error || 'An unexpected error occurred.';
+        return data.message || data.error || unexpectedErrorMsg;
     };
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -66,16 +89,17 @@ export default function LoginPage(): JSX.Element {
                 data = await response.json();
             } catch (jsonError) {
                 console.error('Failed to parse JSON response:', jsonError);
+                // Bu mesaj da çevrilebilir, örneğin:
+                // setError(t('loginPage.errorMessages.parseError', `Server returned an unexpected response (Status: ${response.status}).`));
                 setError(`Server returned an unexpected response (Status: ${response.status}).`);
                 setIsLoading(false);
                 return;
             }
 
-
             if (response.ok && 'accessToken' in data) {
                 console.log('Login successful:', data);
                 localStorage.setItem('accessToken', data.accessToken);
-                localStorage.setItem('userId', data.accessToken);
+                // localStorage.setItem('userId', data.accessToken); // userId için backend'den ayrı bir alan gelmeli.
                 router.push('/dashboard');
             } else {
                 const errorData = data as ErrorResponseDto;
@@ -89,22 +113,33 @@ export default function LoginPage(): JSX.Element {
         } catch (err) {
             console.error('Network or server error:', err);
             if (err instanceof Error) {
-                setError(`Network Error: ${ err.message}. Please check your connection or try again later.`);
+                const networkErrorTemplate = t('loginPage.errorMessages.networkError', "Network Error: {message}. Please check your connection or try again later.");
+                setError(networkErrorTemplate.replace('{message}', err.message));
             } else {
-                setError('An unknown network error occurred.');
+                setError(t('loginPage.errorMessages.unknownNetworkError', 'An unknown network error occurred.'));
             }
         } finally {
             setIsLoading(false);
         }
     };
 
+    // Çeviriler yüklenene kadar bir yüklenme ekranı göster
+    if (!allTranslations) {
+        return (
+            <div className="flex min-h-screen justify-center items-center">
+                {/* Daha iyi bir yükleme göstergesi eklenebilir */}
+                <p>Loading...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="flex min-h-screen bg-white">
-            {/* Sol Taraf: Resim (Ekranın 2/3'ü - lg ve üzeri için) */}
+            {/* Sol Taraf: Resim */}
             <div className="hidden lg:block relative w-0 flex-1 lg:w-2/3">
                 <Image
                     src="/images/login.png"
-                    alt="Financial planning meeting"
+                    alt={t('loginPage.imageAlt', "Financial planning meeting")} // JSON'a loginPage.imageAlt ekleyebilirsiniz
                     layout="fill"
                     objectFit="cover"
                     priority
@@ -112,22 +147,47 @@ export default function LoginPage(): JSX.Element {
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent opacity-30"></div>
             </div>
 
-            {/* Sağ Taraf: Login Formu (Ekranın 1/3'ü - lg ve üzeri için) */}
-            <div className="flex flex-1 flex-col justify-center items-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 w-full lg:w-1/3">
+            {/* Sağ Taraf: Login Formu */}
+            <div className="flex flex-1 flex-col justify-center items-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 w-full lg:w-1/3 relative">
+                {/* Dil Seçici Butonlar */}
+                <div className="absolute top-4 right-4 sm:top-6 sm:right-6 lg:top-8 lg:right-8 z-10">
+                    <div className="flex items-center space-x-2 bg-white p-1 rounded-md shadow">
+                        <div className="text-sm">
+                            <button
+                                onClick={() => setCurrentLocale('tr')}
+                                className={`px-2 py-1 rounded focus:outline-none transition-colors duration-200 ${currentLocale === 'tr' ? 'font-semibold text-blue-700 bg-blue-100' : 'text-gray-600 hover:text-blue-600'}`}
+                                aria-pressed={currentLocale === 'tr'}
+                                aria-label="Türkçe Dil Seçeneği" // Bu da çevrilebilir: t('loginPage.langSwitcher.trLabel')
+                            >
+                                TR
+                            </button>
+                            <span className="text-gray-300 mx-1" aria-hidden="true">|</span>
+                            <button
+                                onClick={() => setCurrentLocale('en')}
+                                className={`px-2 py-1 rounded focus:outline-none transition-colors duration-200 ${currentLocale === 'en' ? 'font-semibold text-blue-700 bg-blue-100' : 'text-gray-600 hover:text-blue-600'}`}
+                                aria-pressed={currentLocale === 'en'}
+                                aria-label="English Language Option" // Bu da çevrilebilir: t('loginPage.langSwitcher.enLabel')
+                            >
+                                EN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="mx-auto w-full max-w-sm lg:w-96">
                     <div className="mb-8 flex justify-center lg:justify-start">
                         <Link href="/">
                             <Image src="/images/logoo.png" alt="FinArea Logo" width={140} height={45} priority />
                         </Link>
                     </div>
-                    <h2 className="text-sm font-medium text-gray-600 text-center lg:text-left">Personal Financial Planner</h2>
-                    <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 text-center lg:text-left">Log in to start saving money!</h1>
+                    <h2 className="text-sm font-medium text-gray-600 text-center lg:text-left">{t('loginPage.subtitle')}</h2>
+                    <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 text-center lg:text-left">{t('loginPage.header')}</h1>
 
                     <div className="mt-8">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Your Username or E-mail
+                                    {t('loginPage.emailLabel')}
                                 </label>
                                 <div className="relative">
                                     <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none"><FiMail /></span>
@@ -135,7 +195,7 @@ export default function LoginPage(): JSX.Element {
                                         id="email" name="email" type="email" autoComplete="email" required
                                         value={email} onChange={(e) => setEmail(e.target.value)}
                                         className={`block w-full appearance-none rounded-md border px-3 pl-10 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-blue-500 sm:text-sm ${validationErrors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'}`}
-                                        placeholder="you@example.com"
+                                        placeholder={t('loginPage.emailPlaceholder')}
                                         aria-invalid={!!validationErrors.email}
                                         aria-describedby={validationErrors.email ? "email-error" : undefined}
                                     />
@@ -145,7 +205,7 @@ export default function LoginPage(): JSX.Element {
 
                             <div>
                                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Password
+                                    {t('loginPage.passwordLabel')}
                                 </label>
                                 <div className="relative">
                                     <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none"><FiLock /></span>
@@ -153,11 +213,12 @@ export default function LoginPage(): JSX.Element {
                                         id="password" name="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required
                                         value={password} onChange={(e) => setPassword(e.target.value)}
                                         className={`block w-full appearance-none rounded-md border px-3 pl-10 pr-10 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-blue-500 sm:text-sm ${validationErrors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'}`}
-                                        placeholder="********"
+                                        placeholder={t('loginPage.passwordPlaceholder')}
                                         aria-invalid={!!validationErrors.password}
                                         aria-describedby={validationErrors.password ? "password-error" : undefined}
                                     />
-                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none" aria-label={showPassword ? "Hide password" : "Show password"}>
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                                            aria-label={showPassword ? t('loginPage.ariaLabel.hidePassword', "Hide password") : t('loginPage.ariaLabel.showPassword', "Show password")}>
                                         {showPassword ? <FiEyeOff /> : <FiEye />}
                                     </button>
                                 </div>
@@ -188,7 +249,7 @@ export default function LoginPage(): JSX.Element {
                                     ) : (
                                         <FiLogIn className="h-5 w-5 mr-2 -ml-1" />
                                     )}
-                                    {isLoading ? 'Logging in...' : 'Log in'}
+                                    {isLoading ? t('loginPage.loggingInButton') : t('loginPage.logInButton')}
                                 </button>
                             </div>
                         </form>
@@ -198,7 +259,7 @@ export default function LoginPage(): JSX.Element {
                                 <div className="w-full border-t border-gray-300" />
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="bg-white px-2 text-gray-500">OR</span>
+                                <span className="bg-white px-2 text-gray-500">{t('loginPage.orSeparator')}</span>
                             </div>
                         </div>
 
@@ -208,29 +269,29 @@ export default function LoginPage(): JSX.Element {
                                 className={`flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                                 <svg className="mr-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px"><path fill="#EA4335" d="M24 9.5c3.44 0 6.3 1.41 8.28 3.22l6.01-6.01C34.91 3.12 30 1 24 1 14.79 1 7.09 6.97 4.03 15.18l7.34 5.67C12.56 15.18 17.77 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.18 24.45c0-1.65-.15-3.25-.43-4.8H24v9.1h12.58c-.54 2.97-2.18 5.49-4.69 7.22l7.34 5.67C43.28 38.07 46.18 31.89 46.18 24.45z"></path><path fill="#FBBC05" d="M11.37 26.85c-.41-1.23-.64-2.55-.64-3.91s.22-2.68.64-3.91l-7.34-5.67C2.19 16.81 1 20.28 1 24s1.19 7.19 3.03 10.62l7.34-5.77z"></path><path fill="#34A853" d="M24 47c6.4 0 11.8-2.13 15.72-5.78l-7.34-5.67c-2.12 1.42-4.82 2.27-7.99 2.27-6.23 0-11.44-5.68-12.63-11.34L4.03 35.82C7.09 44.03 14.79 47 24 47z"></path><path fill="none" d="M1 1h46v46H1z"></path></svg>
-                                Login with Google
+                                {t('loginPage.loginWithGoogle')}
                             </button>
                         </div>
 
                         <div className="mt-8 text-sm text-center space-y-2">
                             <p className="text-gray-600">
-                                Don't have an account?{' '}
+                                {t('loginPage.noAccount')}{' '}
                                 <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                                    Sign Up
+                                    {t('loginPage.signUpLink')}
                                 </Link>
                             </p>
                             <p className="text-gray-600">
-                                Forgot Your Password?{' '}
+                                {t('loginPage.forgotPassword')}{' '}
                                 <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
-                                    Reset Password
+                                    {t('loginPage.resetPasswordLink')}
                                 </Link>
                             </p>
                         </div>
 
                         <div className="mt-6 text-xs text-gray-500 text-center">
-                            <Link href="/terms" className="hover:underline">Terms of service</Link>
-                            {' and '}
-                            <Link href="/privacy" className="hover:underline">Privacy policy</Link>
+                            <Link href="/terms" className="hover:underline">{t('loginPage.termsOfService')}</Link>
+                            {` ${t('loginPage.and')} `}
+                            <Link href="/privacy" className="hover:underline">{t('loginPage.privacyPolicy')}</Link>
                         </div>
                     </div>
                 </div>

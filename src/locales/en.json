@@ -54,7 +54,63 @@
     "follow": "Follow Us",
     "copyright": "© {year} FinArea. All Rights Reserved.",
     "description": "AI-powered personal finance management."
+  },
+  "loginPage": {
+    "title": "Log In",
+    "subtitle": "FinArea: Your Personal Financial Planner",
+    "header": "Log in to start saving money!",
+    "emailLabel": "Your Username or E-mail",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "********",
+    "logInButton": "Log in",
+    "loggingInButton": "Logging in...",
+    "orSeparator": "OR",
+    "loginWithGoogle": "Login with Google",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign Up",
+    "forgotPassword": "Forgot Your Password?",
+    "resetPasswordLink": "Reset Password",
+    "termsOfService": "Terms of service",
+    "privacyPolicy": "Privacy policy",
+    "and": "and",
+    "errorMessages": {
+      "unexpected": "An unexpected error occurred.",
+      "networkError": "Network Error: {message}. Please check your connection or try again later.",
+      "unknownNetworkError": "An unknown network error occurred."
+    }
+  },
+
+  "financialStatusPage": {
+    "title": "Financial Status",
+    "filterLabelYear": "Year",
+    "filterLabelMonth": "Month",
+    "loading": "Loading...",
+    "errorTitle": "An error occurred:",
+    "noDataForPeriod": "No financial data found for the selected period.",
+    "periodSummaryTitleSuffix": "Summary",
+    "totalSpendingLabel": "Total Spending",
+    "authRequiredError": "Authentication required. Please log in.",
+    "sessionExpiredError": "Session expired or invalid. Please log in again.",
+    "apiErrorPrefix": "API Error:",
+    "dataLoadError": "An error occurred while loading data.",
+    "categoryTotals": {
+      "title": "Category Spending Distribution",
+      "noSpendingForPeriod": "No category spending for this period."
+    },
+    "spendingChart": {
+      "title": "Spending Chart",
+      "noData": "No spending data to display.",
+      "barChartLabel": "Bar",
+      "pieChartLabel": "Pie",
+      "spendingLabelSuffix": "Spendings",
+      "distributionLabel": "Spending Distribution",
+      "barChartTitleSuffix": "Category Spendings (Bar)",
+      "pieChartTitleSuffix": "Category Spendings (Pie)"
+    },
+    "langSwitcher": {
+      "trLabel": "Türkçe Dil Seçeneği",
+      "enLabel": "English Language Option"
+    }
   }
-
-
 }

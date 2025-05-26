@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="Removed some unnecessary symbol and things.">
-      <change afterPath="$PROJECT_DIR$/src/app/dashboard/savings-advisor/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/StatementUploadModal.tsx" afterDir="false" />
+    <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="fixed some problems about translate and others.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/CategoryTotalsCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/CategoryTotalsCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/SpendingChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/SpendingChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/transactions/TransactionsList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/savings-advisor/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/savings-advisor/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/locales/tr.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/tr.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +102,22 @@
       <workItem from="1746726070723" duration="9825000" />
       <workItem from="1746778142889" duration="7375000" />
       <workItem from="1746906230217" duration="3235000" />
-      <workItem from="1746961604648" duration="11479000" />
+      <workItem from="1746961604648" duration="11792000" />
+      <workItem from="1747001043271" duration="2000" />
+      <workItem from="1747037377700" duration="4339000" />
+      <workItem from="1747248413049" duration="1207000" />
+      <workItem from="1747303188522" duration="15280000" />
+      <workItem from="1747385807584" duration="6574000" />
+      <workItem from="1747477970181" duration="1121000" />
+      <workItem from="1747568809691" duration="1207000" />
+      <workItem from="1747647758334" duration="1244000" />
+      <workItem from="1747741163143" duration="4512000" />
+      <workItem from="1747828919558" duration="1300000" />
+      <workItem from="1747901621491" duration="1233000" />
+      <workItem from="1748118527426" duration="883000" />
+      <workItem from="1748199584045" duration="1388000" />
+      <workItem from="1748249711815" duration="4566000" />
+      <workItem from="1748297469864" duration="630000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -140,7 +159,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746733112997</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added monthly statement upload and savings target screens.">
+      <option name="closed" value="true" />
+      <created>1746997219446</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1746997219446</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -157,6 +184,8 @@
     <MESSAGE value="Some changes in the dashboard page." />
     <MESSAGE value="Added manual expense entry." />
     <MESSAGE value="Removed some unnecessary symbol and things." />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed some unnecessary symbol and things." />
+    <MESSAGE value="Added monthly statement upload and savings target screens." />
+    <MESSAGE value="fixed some problems about translate and others." />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed some problems about translate and others." />
   </component>
 </project>
