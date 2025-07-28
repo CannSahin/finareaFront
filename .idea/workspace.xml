@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b908f66f-7bc6-4fb9-9aa4-5a030d175619" name="Changes" comment="fixed some problems about translate and others.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/CategoryTotalsCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/CategoryTotalsCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/SpendingChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/components/SpendingChart.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/financal-status/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/savings-advisor/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/savings-advisor/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/login/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/locales/tr.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/tr.json" afterDir="false" />
     </list>
@@ -117,7 +112,15 @@
       <workItem from="1748118527426" duration="883000" />
       <workItem from="1748199584045" duration="1388000" />
       <workItem from="1748249711815" duration="4566000" />
-      <workItem from="1748297469864" duration="630000" />
+      <workItem from="1748297469864" duration="1399000" />
+      <workItem from="1748368537203" duration="1703000" />
+      <workItem from="1748438941998" duration="3706000" />
+      <workItem from="1748507078603" duration="5052000" />
+      <workItem from="1748689635501" duration="825000" />
+      <workItem from="1748770723721" duration="674000" />
+      <workItem from="1749459718021" duration="2111000" />
+      <workItem from="1750762591673" duration="47000" />
+      <workItem from="1753396001485" duration="25000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -167,7 +170,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746997219446</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fixed some problems about translate and others.">
+      <option name="closed" value="true" />
+      <created>1748298957031</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1748298957031</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -17,11 +17,11 @@ interface CategorySummaryDto {
     totalAmount: number;
 }
 
-interface PeriodSummaryResponseDtoShared { // İsim ortaklaştırıldı
+interface PeriodSummaryResponseDtoShared {
     year: number;
     month: number;
-    periodName: string; // Backend'den gelen dönemsel isim (örn: "2023 Nisan")
-    sources: any[]; // Bu tipin detayını bilmiyorum, any bırakıldı
+    periodName: string;
+    sources: any[]; // Bu tipin detayı backend'den geldiği gibi kullanılabilir
     overallCategoryTotals: CategorySummaryDto[];
     grandTotal: number;
 }
@@ -29,8 +29,8 @@ interface PeriodSummaryResponseDtoShared { // İsim ortaklaştırıldı
 // Component importları
 import CategoryTotalsDisplay from "@/app/dashboard/financal-status/components/CategoryTotalsCard";
 import SpendingChart from "@/app/dashboard/financal-status/components/SpendingChart";
-import TransactionsList from "@/app/dashboard/transactions/TransactionsList"; // Bu component'i de t ve locale alacak şekilde güncelleyin
-import SavingsAdvisorPage from '@/app/dashboard/savings-advisor/page'; // Bu component'i de t ve locale alacak şekilde güncelleyin
+import TransactionsList from "@/app/dashboard/transactions/TransactionsList";
+import SavingsAdvisorPage from '@/app/dashboard/savings-advisor/page';
 
 interface UserInfo {
     email: string | null;
@@ -46,7 +46,7 @@ export default function DashboardPage(): JSX.Element | null {
     const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
     const [activeView, setActiveView] = useState<DashboardView>('financialStatus');
 
-    const [currentLocale, setCurrentLocale] = useState<SupportedLocale>('tr');
+    const [currentLocale, setCurrentLocale] = useState<SupportedLocale>('tr'); // Varsayılan dil
     const [allTranslations, setAllTranslations] = useState<TranslationData | null>(null);
     const [areTranslationsLoading, setAreTranslationsLoading] = useState<boolean>(true);
 
@@ -59,7 +59,7 @@ export default function DashboardPage(): JSX.Element | null {
 
     const t = useCallback((fullKey: string, fallback?: any): string => {
         if (areTranslationsLoading || !allTranslations) {
-            return fallback || fullKey;
+            return fallback || fullKey; // Yüklenirken veya çeviri yoksa fallback göster
         }
         return i18nLibraryT(allTranslations, fullKey, fallback || fullKey);
     }, [allTranslations, areTranslationsLoading]);
@@ -69,7 +69,7 @@ export default function DashboardPage(): JSX.Element | null {
     const [summaryError, setSummaryError] = useState<string | null>(null);
 
     const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth() + 1;
+    const currentMonth = new Date().getMonth() + 1; // JavaScript ayları 0'dan başlar
     const [selectedYear, setSelectedYear] = useState<number>(currentYear);
     const [selectedMonth, setSelectedMonth] = useState<number>(currentMonth);
 
@@ -77,34 +77,32 @@ export default function DashboardPage(): JSX.Element | null {
     const monthOptions = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
 
     const fetchFinancialSummary = useCallback(async (year: number, month: number) => {
-        if (areTranslationsLoading) {
+        if (areTranslationsLoading) { // Çeviriler yüklenmeden API çağrısı yapma
             return;
         }
         setIsSummaryLoading(true);
         setSummaryError(null);
         const token = localStorage.getItem('accessToken');
-        // Kullanıcı ID'sini de almanız gerekebilir (localStorage'dan veya JWT'den)
-        const userId = localStorage.getItem('userId'); // Örnek, backend bunu token'dan da alabilir
 
-        if (!token /*|| !userId*/) { // userId kontrolü de eklenebilir
+        if (!token) {
             setSummaryError(t('financialStatusPage.authRequiredError', "Kimlik doğrulaması gerekli."));
             setIsSummaryLoading(false);
             router.push('/login');
             return;
         }
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-        // API URL'nizi kullanıcı ID'sini içerecek şekilde güncelleyin
-        // const finalApiUrl = `${API_URL}/api/v1/summaries/expenses/${userId}/${year}/${month}`;
-        const finalApiUrl = `${API_URL}/api/v1/summaries/expenses/${year}/${month}`; // Şimdilik userId'siz
+        const finalApiUrl = `${API_URL}/api/v1/summaries/expenses/${year}/${month}`;
 
         try {
             const response = await fetch(finalApiUrl, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             });
             if (response.status === 401) {
-                localStorage.removeItem('accessToken'); localStorage.removeItem('userEmail'); // userId'yi de silin
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('userEmail');
                 setSummaryError(t('financialStatusPage.sessionExpiredError', "Oturum süresi dolmuş."));
-                router.push('/login'); return;
+                router.push('/login');
+                return;
             }
             if (!response.ok) {
                 const apiErrorPrefix = t('financialStatusPage.apiErrorPrefix', "API Hatası:");
@@ -126,7 +124,7 @@ export default function DashboardPage(): JSX.Element | null {
             router.push('/login');
         } else {
             const userEmail = localStorage.getItem('userEmail');
-            setUserInfo({ email: userEmail || 'User' });
+            setUserInfo({ email: userEmail || 'User' }); // 'User' bir fallback olabilir
         }
     }, [router]);
 
@@ -134,12 +132,13 @@ export default function DashboardPage(): JSX.Element | null {
         if (!areTranslationsLoading && localStorage.getItem('accessToken')) {
             setIsPageLoading(false);
         } else if (!localStorage.getItem('accessToken')) {
-            router.push('/login');
+            router.push('/login'); // Token yoksa ve çeviriler yüklendiyse login'e yönlendir
         }
     }, [areTranslationsLoading, router]);
 
 
     useEffect(() => {
+        // Sadece sayfa ve çeviriler yüklendikten sonra ve aktif view financialStatus ise veri çek
         if (!isPageLoading && !areTranslationsLoading && activeView === 'financialStatus') {
             fetchFinancialSummary(selectedYear, selectedMonth);
         }
@@ -149,33 +148,32 @@ export default function DashboardPage(): JSX.Element | null {
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('userEmail');
-        // localStorage.removeItem('userId'); // Eğer saklıyorsanız
         router.push('/login');
     };
 
     if (areTranslationsLoading || isPageLoading) {
+        // İlk yüklemede hangi dilin seçili olduğuna bağlı olarak bir çeviri göster
+        const initialTranslations = getTranslations(currentLocale);
         return (
             <div className="flex h-screen w-screen items-center justify-center bg-gray-100">
                 <FiLoader className="animate-spin h-12 w-12 text-blue-600" />
                 <span className="ml-3 text-gray-700">
-                    {i18nLibraryT(getTranslations(currentLocale), 'financialStatusPage.loading', 'Yükleniyor...')}
+                    {i18nLibraryT(initialTranslations, 'financialStatusPage.loading', 'Yükleniyor...')}
                 </span>
             </div>
         );
     }
 
     const renderActiveView = () => {
-        if (typeof t !== 'function') {
-            return <div className="p-6 text-red-500">Çeviri fonksiyonu yüklenemedi.</div>;
-        }
-
+        // t fonksiyonunun yüklenip yüklenmediğini kontrol etmeye gerek yok, areTranslationsLoading ile kontrol ediliyor.
         switch (activeView) {
             case 'financialStatus':
                 return (
                     <div className="space-y-6">
                         <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
-                                {t('financialStatusPage.title', 'Finansal Durum')}
+                                {/* Ana başlık için `financialStatusPage.title` kullanıyoruz */}
+                                {t('financialStatusPage.title', 'Financial Status')}
                             </h1>
                             <div className="flex items-center space-x-2 mt-4 sm:mt-0">
                                 <div>
@@ -230,7 +228,6 @@ export default function DashboardPage(): JSX.Element | null {
                                     <div className="flex items-center justify-between">
                                         <h2 className="text-xl font-semibold text-gray-700 flex items-center">
                                             <FiCalendar className="mr-2 text-blue-500" />
-                                            {/* periodName backend'den zaten çevrilmiş veya dönemsel bir isim olarak gelebilir */}
                                             {summaryData.periodName} {t('financialStatusPage.periodSummaryTitleSuffix', 'Özeti')}
                                         </h2>
                                         <div className="text-right">
@@ -253,23 +250,21 @@ export default function DashboardPage(): JSX.Element | null {
                     </div>
                 );
             case 'transactions':
-                // TransactionsList component'i de "Finans Hareketleri" başlığını kendi içinde çevirebilir.
-                // Veya burada bir başlık eklersiniz:
                 return (
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
-                            {t('dashboard.sidebar.transactions', 'Finans Hareketleri')}
+                            {/* JSON yapınıza göre: financialStatusPage.dashboard.sidebar.transactions */}
+                            {t('financialStatusPage.dashboard.sidebar.transactions', 'Finans Hareketleri')}
                         </h1>
                         <TransactionsList locale={currentLocale} t={t} />
                     </div>
                 );
             case 'savingsAdvisor':
-                // SavingsAdvisorPage component'i de "Tasarruf Danışmanı" başlığını kendi içinde çevirebilir.
-                // Veya burada bir başlık eklersiniz:
                 return (
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
-                            {t('dashboard.sidebar.savingsAdvisor', 'Tasarruf Danışmanı')}
+                            {/* JSON yapınıza göre: financialStatusPage.dashboard.sidebar.savingsAdvisor */}
+                            {t('financialStatusPage.dashboard.sidebar.savingsAdvisor', 'Tasarruf Danışmanı')}
                         </h1>
                         <SavingsAdvisorPage locale={currentLocale} t={t} />
                     </div>
@@ -297,29 +292,31 @@ export default function DashboardPage(): JSX.Element | null {
                         className={`flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'financialStatus' ? 'bg-gray-700 text-white' : ''}`}
                     >
                         <FiDollarSign className="mr-3 h-5 w-5" />
-                        {/* JSON'daki anahtarınızla eşleşecek şekilde güncelleyin */}
-                        {t('financialStatusPage.title', 'Finansal Durum')}
+                        {/* JSON yapınıza göre: financialStatusPage.dashboard.sidebar.financialStatus */}
+                        {t('financialStatusPage.dashboard.sidebar.financialStatus', 'Financial Status')}
                     </button>
                     <button
                         onClick={() => setActiveView('transactions')}
                         className={`flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'transactions' ? 'bg-gray-700 text-white' : ''}`}
                     >
                         <FiTrendingUp className="mr-3 h-5 w-5" />
-                        {/* JSON'daki anahtarınızla eşleşecek şekilde güncelleyin, örneğin: */}
-                        {t('dashboard.sidebar.transactions', 'Finans Hareketleri')}
+                        {/* JSON yapınıza göre: financialStatusPage.dashboard.sidebar.transactions */}
+                        {t('financialStatusPage.dashboard.sidebar.transactions', 'Finans Hareketleri')}
                     </button>
                     <button
                         onClick={() => setActiveView('savingsAdvisor')}
                         className={`flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md ${activeView === 'savingsAdvisor' ? 'bg-gray-700 text-white' : ''}`}
                     >
                         <FiTarget className="mr-3 h-5 w-5" />
-                        {/* JSON'daki anahtarınızla eşleşecek şekilde güncelleyin, örneğin: */}
-                        {t('dashboard.sidebar.savingsAdvisor', 'Tasarruf Danışmanı')}
+                        {/* JSON yapınıza göre: financialStatusPage.dashboard.sidebar.savingsAdvisor */}
+                        {t('financialStatusPage.dashboard.sidebar.savingsAdvisor', 'Tasarruf Danışmanı')}
                     </button>
                 </nav>
                 <div className="px-4 py-2 border-t border-gray-700">
-                    {/* JSON'daki anahtarınızla eşleşecek şekilde güncelleyin */}
-                    <p className="text-xs text-gray-400 truncate mb-2">{t('financialStatusPage.langSwitcher.trLabel', 'Dil')}:</p>
+                    <p className="text-xs text-gray-400 truncate mb-2">
+                        {/* JSON yapınıza göre: financialStatusPage.dashboard.sidebar.languageLabel */}
+                        {t('financialStatusPage.dashboard.sidebar.languageLabel', 'Language')}:
+                    </p>
                     <div className="flex space-x-2 justify-center">
                         <button
                             onClick={() => setCurrentLocale('tr')}
@@ -338,8 +335,8 @@ export default function DashboardPage(): JSX.Element | null {
                 <div className="px-2 py-4 mt-auto border-t border-gray-700">
                     <button onClick={handleLogout} className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-red-700 hover:text-white rounded-md">
                         <FiLogOut className="mr-3 h-5 w-5" />
-                        {/* JSON'daki anahtarınızla eşleşecek şekilde güncelleyin */}
-                        {t('loginPage.logInButton', 'Çıkış Yap')} {/* 'loginPage.logInButton' uygun değil, 'dashboard.sidebar.logout' olmalıydı */}
+                        {/* JSON yapınıza göre: financialStatusPage.dashboard.sidebar.logout */}
+                        {t('financialStatusPage.dashboard.sidebar.logout', 'Çıkış Yap')}
                     </button>
                 </div>
             </aside>
@@ -353,6 +350,7 @@ export default function DashboardPage(): JSX.Element | null {
                     <div className="flex items-center">
                         <span className="text-sm font-medium text-gray-700 mr-3 lg:hidden">{userInfo.email}</span>
                         <button onClick={handleLogout} className="text-red-500 hover:text-red-700">
+                            {/* Mobil headerdaki logout butonu için de çeviri kullanılabilir */}
                             <FiLogOut className="h-6 w-6" />
                         </button>
                     </div>

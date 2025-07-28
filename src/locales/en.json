@@ -98,6 +98,15 @@
       "title": "Category Spending Distribution",
       "noSpendingForPeriod": "No category spending for this period."
     },
+    "dashboard": {
+      "sidebar": {
+        "financialStatus": "Financial Status",
+        "transactions": "Transactions",
+        "savingsAdvisor": "Savings Advisor",
+        "logout": "Log Out",
+        "languageLabel": "Language"
+      }
+    },
     "spendingChart": {
       "title": "Spending Chart",
       "noData": "No spending data to display.",

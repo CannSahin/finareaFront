@@ -86,6 +86,7 @@
 
   "financialStatusPage": {
     "title": "Finansal Durum",
+    "languageLabel": "Dil",
     "filterLabelYear": "Yıl",
     "filterLabelMonth": "Ay",
     "loading": "Yükleniyor...",
@@ -110,6 +111,15 @@
       "distributionLabel": "Harcama Dağılımı",
       "barChartTitleSuffix": "Kategori Harcamaları (Çubuk)",
       "pieChartTitleSuffix": "Kategori Harcamaları (Pasta)"
+    },
+    "dashboard": {
+      "sidebar": {
+        "financialStatus": "Finansal Durum",
+        "transactions": "Finans Hareketleri",
+        "savingsAdvisor": "Tasarruf Danışmanı",
+        "logout": "Çıkış Yap",
+        "languageLabel": "Dil"
+      }
     },
     "langSwitcher": {
       "trLabel": "Türkçe Dil Seçeneği",
